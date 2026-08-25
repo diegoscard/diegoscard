@@ -1,8 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, ChangeEvent, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { User, BarChart3, X, Instagram, Facebook, Youtube } from "lucide-react";
+import { BarChart3, X, Instagram, Facebook, Youtube, Check } from "lucide-react";
+import Cropper from "react-easy-crop";
 import LinkCard from "./components/LinkCard";
 import { UserProfile } from "./types";
+import getCroppedImg from "./utils/cropImage";
 
 const INITIAL_PROFILE: UserProfile = {
   name: "Diego Scard",
@@ -54,6 +56,14 @@ const INITIAL_PROFILE: UserProfile = {
 export default function App() {
   const [stats, setStats] = useState<Record<string, number>>({});
   const [showStats, setShowStats] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState("/uploads/avatar.png");
+  const [uploading, setUploading] = useState(false);
+  
+  // Crop State
+  const [imageToCrop, setImageToCrop] = useState<string | null>(null);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
 
   useEffect(() => {
     fetch("/api/stats")
@@ -65,7 +75,52 @@ export default function App() {
     if (localStats) {
       setStats(prev => ({ ...prev, ...JSON.parse(localStats) }));
     }
+
+    // Verificar se o avatar existe e adicionar um cache buster
+    setAvatarUrl("/uploads/avatar.png?t=" + Date.now());
   }, []);
+
+  const onCropComplete = useCallback((_croppedArea: any, pixelCrop: any) => {
+    setCroppedAreaPixels(pixelCrop);
+  }, []);
+
+  const handleAvatarUpload = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.addEventListener('load', () => {
+      setImageToCrop(reader.result as string);
+    });
+    reader.readAsDataURL(file);
+  };
+
+  const confirmCrop = async () => {
+    if (!imageToCrop || !croppedAreaPixels) return;
+
+    setUploading(true);
+    try {
+      const croppedImageBlob = await getCroppedImg(imageToCrop, croppedAreaPixels);
+      if (!croppedImageBlob) return;
+
+      const formData = new FormData();
+      formData.append("avatar", croppedImageBlob, "avatar.png");
+
+      const response = await fetch("/api/upload-avatar", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await response.json();
+      if (data.success) {
+        setAvatarUrl(data.url);
+        setImageToCrop(null);
+      }
+    } catch (err) {
+      console.error("Upload failed:", err);
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const trackClick = async (linkId: string) => {
     const newStats = { ...stats, [linkId]: (stats[linkId] || 0) + 1 };
@@ -100,12 +155,34 @@ export default function App() {
         <motion.div
           className="flex flex-col items-center text-center mb-12"
         >
-          <div className="relative mb-10">
-            <div className="w-28 h-28 rounded-full bg-gradient-to-tr from-red-600 via-red-500 to-black p-[3px] shadow-[0_0_50px_-12px_rgba(220,38,38,0.5)]">
-              <div className="w-full h-full rounded-full bg-[#0F0F0F] flex items-center justify-center overflow-hidden border-4 border-[#050505]">
-                <div className="text-3xl font-black text-white italic tracking-tighter">SCARD</div>
+          <div className="relative mb-10 group">
+            <label className="cursor-pointer block relative">
+              <div className="w-28 h-28 rounded-full bg-gradient-to-tr from-red-600 via-red-500 to-black p-[3px] shadow-[0_0_50px_-12px_rgba(220,38,38,0.5)] group-hover:scale-105 transition-transform">
+                <div className="w-full h-full rounded-full bg-[#0F0F0F] flex items-center justify-center overflow-hidden border-4 border-[#050505]">
+                  {uploading ? (
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-500" />
+                  ) : (
+                    <img 
+                      src={avatarUrl} 
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${INITIAL_PROFILE.name}&background=0F0F0F&color=fff&bold=true`;
+                      }}
+                      className="w-full h-full object-cover"
+                      alt="Profile"
+                    />
+                  )}
+                </div>
               </div>
-            </div>
+              <input 
+                type="file" 
+                className="hidden" 
+                accept="image/*"
+                onChange={handleAvatarUpload}
+              />
+              <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                <span className="text-[10px] font-black uppercase text-white tracking-widest">Alterar</span>
+              </div>
+            </label>
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
@@ -168,6 +245,68 @@ export default function App() {
         >
           <BarChart3 size={24} className="text-white group-hover:scale-110 transition-transform" />
         </button>
+
+        <AnimatePresence>
+          {imageToCrop && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[60] flex flex-col bg-black"
+            >
+              <div className="relative flex-1">
+                <Cropper
+                  image={imageToCrop}
+                  crop={crop}
+                  zoom={zoom}
+                  aspect={1}
+                  onCropChange={setCrop}
+                  onCropComplete={onCropComplete}
+                  onZoomChange={setZoom}
+                  cropShape="round"
+                  showGrid={false}
+                />
+              </div>
+              <div className="p-8 bg-[#0F0F0F] border-t border-zinc-800 flex flex-col gap-6">
+                <div className="flex flex-col gap-2">
+                  <span className="text-[10px] font-black uppercase text-zinc-500 tracking-widest">Ajustar Zoom</span>
+                  <input
+                    type="range"
+                    value={zoom}
+                    min={1}
+                    max={3}
+                    step={0.1}
+                    aria-labelledby="Zoom"
+                    onChange={(e) => setZoom(Number(e.target.value))}
+                    className="w-full accent-red-600 h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer"
+                  />
+                </div>
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => setImageToCrop(null)}
+                    className="flex-1 py-4 rounded-xl border border-zinc-800 text-[10px] font-black uppercase tracking-widest hover:bg-zinc-800 transition-colors"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={confirmCrop}
+                    disabled={uploading}
+                    className="flex-1 py-4 bg-red-600 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-red-700 transition-colors disabled:opacity-50"
+                  >
+                    {uploading ? (
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                    ) : (
+                      <>
+                        <Check size={14} />
+                        Confirmar
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Stats Modal - Dashboard Style */}
         <AnimatePresence>

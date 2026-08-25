@@ -17,7 +17,7 @@ export default function LinkCard({ link, count, onTrack }: LinkCardProps) {
       onClick={() => onTrack(link.id)}
       whileHover={{ scale: 1.01 }}
       whileTap={{ scale: 0.98 }}
-      className={`group relative flex items-center justify-center w-full p-5 mb-3 rounded-xl transition-all duration-300 border-2 border-transparent ${link.color} shadow-lg text-center`}
+      className={`group relative flex items-center justify-center w-full p-5 mb-3 rounded-xl transition-all duration-300 ${link.color} shadow-lg text-center`}
     >
       <span className="text-sm font-black tracking-[0.2em] uppercase text-white">
         {link.title}
