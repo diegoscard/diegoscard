@@ -1,0 +1,6 @@
+{
+  "name": "Bio Link Pro",
+  "description": "Uma página de links moderna e rápida para redes sociais com análise de cliques integrada.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
