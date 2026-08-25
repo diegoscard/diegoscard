@@ -35,7 +35,7 @@ const INITIAL_PROFILE: UserProfile = {
     {
       id: "whatsapp",
       title: "WHATSAPP",
-      url: "https://wa.me/5541988745822",
+      url: "https://api.whatsapp.com/send?phone=5541988745822&text=Ol%C3%A1!%20Vim%20pelo%20link%20da%20Bio.",
       icon: "MessageCircle",
       color: "bg-[#25D366]",
       hoverColor: "hover:bg-[#1DA851]",
