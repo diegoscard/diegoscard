@@ -98,8 +98,6 @@ export default function App() {
       <main className="relative max-w-lg mx-auto px-6 pt-20 pb-24">
         {/* Profile Header */}
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
           className="flex flex-col items-center text-center mb-12"
         >
           <div className="relative mb-10">
