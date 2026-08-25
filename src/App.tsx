@@ -6,27 +6,27 @@ import { UserProfile } from "./types";
 
 const INITIAL_PROFILE: UserProfile = {
   name: "Diego Scard",
-  bio: "Especialista em Marketing Digital & Estratégia Visual. Transformando ideias em resultados.",
+  bio: "Videomaker Mobile & Estrategista Digital +20 anos criando resultados",
   links: [
     {
       id: "instagram",
-      title: "Instagram",
+      title: "INSTAGRAM",
       url: "https://www.instagram.com/srscard/",
       icon: "Instagram",
-      color: "bg-gradient-to-r from-purple-600 to-pink-500",
-      hoverColor: "hover:from-purple-700 hover:to-pink-600",
+      color: "bg-gradient-to-r from-[#833ab4] via-[#fd1d1d] to-[#fcb045]",
+      hoverColor: "hover:opacity-90",
     },
     {
       id: "tiktok",
-      title: "TikTok",
+      title: "TIKTOK",
       url: "https://www.tiktok.com/@diego.scard?lang=pt-BR",
       icon: "Music2",
-      color: "bg-black",
-      hoverColor: "hover:bg-zinc-900",
+      color: "bg-zinc-900",
+      hoverColor: "hover:bg-black",
     },
     {
       id: "facebook",
-      title: "Facebook",
+      title: "FACEBOOK",
       url: "https://www.facebook.com/diego.c.dasilva.9/",
       icon: "Facebook",
       color: "bg-[#1877F2]",
@@ -34,19 +34,19 @@ const INITIAL_PROFILE: UserProfile = {
     },
     {
       id: "whatsapp",
-      title: "WhatsApp",
+      title: "WHATSAPP",
       url: "https://wa.me/5541988745822",
       icon: "MessageCircle",
       color: "bg-[#25D366]",
       hoverColor: "hover:bg-[#1DA851]",
     },
     {
-      id: "portfolio",
-      title: "Meu Portfólio",
-      url: "#",
-      icon: "Globe",
-      color: "bg-zinc-800",
-      hoverColor: "hover:bg-zinc-700",
+      id: "iptv",
+      title: "SCARD PLAY IPTV",
+      url: "https://scard-play.vercel.app/",
+      icon: "Tv",
+      color: "bg-red-600",
+      hoverColor: "hover:bg-red-700",
     },
   ],
 };
@@ -56,13 +56,11 @@ export default function App() {
   const [showStats, setShowStats] = useState(false);
 
   useEffect(() => {
-    // Carregar stats iniciais do servidor
     fetch("/api/stats")
       .then((res) => res.json())
       .then((data) => setStats(data))
       .catch((err) => console.error("Error fetching stats:", err));
     
-    // Carregar do localStorage como backup/cache
     const localStats = localStorage.getItem("bio_link_stats");
     if (localStats) {
       setStats(prev => ({ ...prev, ...JSON.parse(localStats) }));
@@ -70,12 +68,10 @@ export default function App() {
   }, []);
 
   const trackClick = async (linkId: string) => {
-    // 1. Atualizar UI imediatamente
     const newStats = { ...stats, [linkId]: (stats[linkId] || 0) + 1 };
     setStats(newStats);
     localStorage.setItem("bio_link_stats", JSON.stringify(newStats));
 
-    // 2. Tentar enviar para o servidor
     try {
       const response = await fetch("/api/track-click", {
         method: "POST",
@@ -92,127 +88,149 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-zinc-100 font-sans selection:bg-purple-500/30">
+    <div className="min-h-screen bg-[#050505] text-zinc-100 font-sans selection:bg-red-500/30 overflow-x-hidden">
       {/* Background Decor */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-900/20 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-900/10 rounded-full blur-[120px]" />
+      <div className="fixed inset-0 overflow-hidden pointer-events-none opacity-20">
+        <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-red-900/30 rounded-full blur-[150px]" />
+        <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-zinc-900/50 rounded-full blur-[150px]" />
       </div>
 
-      <main className="relative max-w-md mx-auto px-6 pt-16 pb-24">
+      <main className="relative max-w-lg mx-auto px-6 pt-20 pb-24">
         {/* Profile Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="flex flex-col items-center text-center mb-16"
         >
-          <div className="relative inline-block mb-6">
-            <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-purple-600 to-blue-500 p-1">
-              <div className="w-full h-full rounded-full bg-zinc-900 flex items-center justify-center overflow-hidden">
-                <User size={48} className="text-zinc-400" />
+          <div className="relative mb-8">
+            <div className="w-28 h-28 rounded-full bg-gradient-to-tr from-red-600 via-red-500 to-black p-[3px] shadow-2xl shadow-red-600/20">
+              <div className="w-full h-full rounded-full bg-[#0F0F0F] flex items-center justify-center overflow-hidden border-4 border-[#050505]">
+                <div className="text-3xl font-black text-white italic tracking-tighter">SCARD</div>
               </div>
             </div>
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              transition={{ delay: 0.5 }}
-              className="absolute bottom-0 right-0 w-6 h-6 bg-green-500 border-4 border-zinc-900 rounded-full"
+              transition={{ delay: 0.5, type: "spring" }}
+              className="absolute bottom-1 right-1 w-7 h-7 bg-green-500 border-4 border-[#050505] rounded-full shadow-lg shadow-green-500/20"
             />
           </div>
           
-          <h1 className="text-2xl font-bold mb-2 tracking-tight">
+          <h1 className="text-4xl font-black tracking-tighter uppercase mb-3 bg-gradient-to-b from-white to-zinc-500 bg-clip-text text-transparent">
             {INITIAL_PROFILE.name}
           </h1>
-          <p className="text-zinc-400 text-sm leading-relaxed max-w-[280px] mx-auto">
+          <div className="flex items-center gap-2 px-3 py-1 bg-red-600/10 border border-red-500/20 rounded-full mb-4">
+            <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+            <span className="text-[10px] font-black tracking-[0.2em] text-red-500 uppercase">
+              CRIADOR DE CONTEÚDO DIGITAL
+            </span>
+          </div>
+          <p className="text-zinc-500 text-[11px] font-bold uppercase tracking-widest leading-relaxed max-w-xs">
             {INITIAL_PROFILE.bio}
           </p>
         </motion.div>
 
         {/* Links List */}
-        <div className="space-y-2">
+        <div className="space-y-3">
           {INITIAL_PROFILE.links.map((link, index) => (
             <motion.div
               key={link.id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
             >
-              <LinkCard link={link} onTrack={trackClick} />
+              <LinkCard 
+                link={link} 
+                count={stats[link.id]} 
+                onTrack={trackClick} 
+              />
             </motion.div>
           ))}
         </div>
 
         {/* Footer */}
-        <footer className="mt-16 text-center">
-          <div className="flex justify-center space-x-6 mb-8 text-zinc-500">
-             <Instagram size={20} className="hover:text-white cursor-pointer transition-colors" />
-             <Youtube size={20} className="hover:text-white cursor-pointer transition-colors" />
-             <Facebook size={20} className="hover:text-white cursor-pointer transition-colors" />
-          </div>
-          <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-600 font-medium">
-            © 2026 Bio Link Pro • Design by Scard
+        <footer className="mt-20 pt-10 border-t border-zinc-900 text-center">
+          
+          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-700">
+            © 2026 Scard Play • All Systems Operational
           </p>
         </footer>
 
         {/* Floating Stats Button */}
         <button
           onClick={() => setShowStats(true)}
-          className="fixed bottom-6 right-6 w-12 h-12 bg-white/5 border border-white/10 rounded-full flex items-center justify-center hover:bg-white/10 transition-all backdrop-blur-md"
+          className="fixed bottom-8 right-8 w-14 h-14 bg-red-600 rounded-2xl flex items-center justify-center hover:bg-red-700 transition-all shadow-xl shadow-red-600/30 group"
         >
-          <BarChart3 size={20} className="text-zinc-400" />
+          <BarChart3 size={24} className="text-white group-hover:scale-110 transition-transform" />
         </button>
 
-        {/* Stats Modal */}
+        {/* Stats Modal - Dashboard Style */}
         <AnimatePresence>
           {showStats && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 flex items-center justify-center px-6 bg-black/60 backdrop-blur-sm"
+              className="fixed inset-0 z-50 flex items-center justify-center px-6 bg-black/80 backdrop-blur-md"
             >
               <motion.div
-                initial={{ scale: 0.9, y: 20 }}
+                initial={{ scale: 0.95, y: 30 }}
                 animate={{ scale: 1, y: 0 }}
-                exit={{ scale: 0.9, y: 20 }}
-                className="w-full max-w-sm bg-zinc-900 border border-white/10 rounded-3xl p-8 shadow-2xl"
+                exit={{ scale: 0.95, y: 30 }}
+                className="w-full max-w-md bg-[#0F0F0F] border-2 border-zinc-800 rounded-2xl p-8 shadow-2xl relative overflow-hidden"
               >
-                <div className="flex justify-between items-center mb-8">
-                  <h2 className="text-xl font-bold flex items-center gap-2">
-                    <BarChart3 size={22} className="text-purple-500" />
-                    Análise de Cliques
-                  </h2>
+                <div className="absolute top-0 right-0 p-24 bg-red-600/5 rounded-full blur-[100px] pointer-events-none" />
+                
+                <div className="flex justify-between items-center mb-10 relative">
+                  <div>
+                    <h2 className="text-[10px] font-black tracking-[0.2em] text-red-500 uppercase mb-1">
+                      Metrics Center
+                    </h2>
+                    <h3 className="text-2xl font-black tracking-tight uppercase">
+                      Performance <span className="text-zinc-600">Stats</span>
+                    </h3>
+                  </div>
                   <button
                     onClick={() => setShowStats(false)}
-                    className="p-2 hover:bg-white/5 rounded-full transition-colors"
+                    className="p-3 bg-zinc-800 hover:bg-zinc-700 rounded-xl transition-colors"
                   >
                     <X size={20} />
                   </button>
                 </div>
 
-                <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4 mb-8">
+                  <div className="bg-zinc-900/50 p-4 rounded-xl border border-zinc-800">
+                    <p className="text-[8px] font-black text-zinc-500 uppercase tracking-widest mb-1">Total Engagement</p>
+                    <p className="text-2xl font-black text-green-500">
+                      {Object.values(stats).reduce((a: number, b: number) => a + b, 0).toLocaleString()}
+                    </p>
+                  </div>
+                  <div className="bg-zinc-900/50 p-4 rounded-xl border border-zinc-800">
+                    <p className="text-[8px] font-black text-zinc-500 uppercase tracking-widest mb-1">Active Sources</p>
+                    <p className="text-2xl font-black text-white">{INITIAL_PROFILE.links.length}</p>
+                  </div>
+                </div>
+
+                <div className="space-y-3 relative">
                   {INITIAL_PROFILE.links.map((link) => (
-                    <div key={link.id} className="flex items-center justify-between p-3 bg-white/5 rounded-xl">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-2 h-2 rounded-full ${link.color}`} />
-                        <span className="text-sm font-medium">{link.title}</span>
+                    <div key={link.id} className="flex items-center justify-between p-4 bg-zinc-900/30 border border-zinc-800/50 rounded-xl hover:border-zinc-700 transition-colors">
+                      <div className="flex items-center gap-4">
+                        <div className={`w-2 h-2 rounded-full ${link.color.split(' ')[0] === 'bg-gradient-to-r' ? 'bg-pink-500' : link.color}`} />
+                        <span className="text-[10px] font-black tracking-widest uppercase">{link.title}</span>
                       </div>
-                      <span className="text-lg font-mono font-bold text-purple-400">
+                      <span className="text-lg font-mono font-black text-white">
                         {stats[link.id] || 0}
                       </span>
                     </div>
                   ))}
-                  
-                  {Object.keys(stats).length === 0 && (
-                    <p className="text-center text-zinc-500 py-8 italic">
-                      Nenhum clique registrado ainda.
-                    </p>
-                  )}
                 </div>
                 
-                <p className="mt-8 text-[10px] text-zinc-500 text-center uppercase tracking-wider">
-                  Dados salvos localmente nesta sessão
-                </p>
+                <div className="mt-10 flex items-center justify-center gap-2">
+                  <div className="w-1 h-1 rounded-full bg-green-500 animate-pulse" />
+                  <p className="text-[8px] text-zinc-600 font-black uppercase tracking-[0.2em]">
+                    Real-time analysis active
+                  </p>
+                </div>
               </motion.div>
             </motion.div>
           )}
