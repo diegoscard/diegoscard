@@ -19,24 +19,47 @@ export default async function getCroppedImg(
     return null;
   }
 
-  canvas.width = pixelCrop.width;
-  canvas.height = pixelCrop.height;
+  // Round values to avoid sub-pixel issues
+  const safeCrop = {
+    x: Math.round(pixelCrop.x),
+    y: Math.round(pixelCrop.y),
+    width: Math.round(pixelCrop.width),
+    height: Math.round(pixelCrop.height),
+  };
 
+  // Limit max dimension for mobile stability (e.g., 800px)
+  const MAX_DIM = 800;
+  let targetWidth = safeCrop.width;
+  let targetHeight = safeCrop.height;
+
+  if (targetWidth > MAX_DIM) {
+    targetHeight = (MAX_DIM / targetWidth) * targetHeight;
+    targetWidth = MAX_DIM;
+  }
+
+  canvas.width = targetWidth;
+  canvas.height = targetHeight;
+
+  ctx.imageSmoothingQuality = 'high';
   ctx.drawImage(
     image,
-    pixelCrop.x,
-    pixelCrop.y,
-    pixelCrop.width,
-    pixelCrop.height,
+    safeCrop.x,
+    safeCrop.y,
+    safeCrop.width,
+    safeCrop.height,
     0,
     0,
-    pixelCrop.width,
-    pixelCrop.height
+    targetWidth,
+    targetHeight
   );
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     canvas.toBlob((blob) => {
+      if (!blob) {
+        reject(new Error('Canvas is empty'));
+        return;
+      }
       resolve(blob);
-    }, 'image/png');
+    }, 'image/jpeg', 0.9); // Use JPEG for better mobile compatibility and smaller size
   });
 }

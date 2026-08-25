@@ -37,8 +37,8 @@ const storage = multer.diskStorage({
     cb(null, UPLOADS_DIR);
   },
   filename: (req, file, cb) => {
-    // Sempre salvar como avatar.png para simplificar
-    cb(null, "avatar.png");
+    // Sempre salvar como avatar.jpg para simplificar e performance
+    cb(null, "avatar.jpg");
   },
 });
 const upload = multer({ storage });
@@ -69,7 +69,7 @@ async function startServer() {
 
   // Rota para Upload de Foto
   app.post("/api/upload-avatar", upload.single("avatar"), (req, res) => {
-    res.json({ success: true, url: "/uploads/avatar.png?t=" + Date.now() });
+    res.json({ success: true, url: "/uploads/avatar.jpg?t=" + Date.now() });
   });
 
   if (process.env.NODE_ENV !== "production") {

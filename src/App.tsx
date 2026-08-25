@@ -56,7 +56,7 @@ const INITIAL_PROFILE: UserProfile = {
 export default function App() {
   const [stats, setStats] = useState<Record<string, number>>({});
   const [showStats, setShowStats] = useState(false);
-  const [avatarUrl, setAvatarUrl] = useState("/uploads/avatar.png");
+  const [avatarUrl, setAvatarUrl] = useState("/uploads/avatar.jpg");
   const [uploading, setUploading] = useState(false);
   
   // Crop State
@@ -77,7 +77,7 @@ export default function App() {
     }
 
     // Verificar se o avatar existe e adicionar um cache buster
-    setAvatarUrl("/uploads/avatar.png?t=" + Date.now());
+    setAvatarUrl("/uploads/avatar.jpg?t=" + Date.now());
   }, []);
 
   const onCropComplete = useCallback((_croppedArea: any, pixelCrop: any) => {
@@ -93,6 +93,9 @@ export default function App() {
       setImageToCrop(reader.result as string);
     });
     reader.readAsDataURL(file);
+    
+    // Clear the input so the same file can be picked again
+    e.target.value = "";
   };
 
   const confirmCrop = async () => {
@@ -100,23 +103,31 @@ export default function App() {
 
     setUploading(true);
     try {
+      console.log("Starting crop processing...");
       const croppedImageBlob = await getCroppedImg(imageToCrop, croppedAreaPixels);
-      if (!croppedImageBlob) return;
+      if (!croppedImageBlob) throw new Error("Falha ao processar imagem.");
 
+      console.log("Image processed, starting upload...");
       const formData = new FormData();
-      formData.append("avatar", croppedImageBlob, "avatar.png");
+      formData.append("avatar", croppedImageBlob, "avatar.jpg");
 
       const response = await fetch("/api/upload-avatar", {
         method: "POST",
         body: formData,
       });
+      
+      if (!response.ok) throw new Error("Falha no upload para o servidor.");
+      
       const data = await response.json();
       if (data.success) {
         setAvatarUrl(data.url);
         setImageToCrop(null);
+      } else {
+        throw new Error(data.error || "Erro desconhecido no upload.");
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Upload failed:", err);
+      alert("Erro ao salvar foto: " + (err.message || "Tente uma imagem menor."));
     } finally {
       setUploading(false);
     }
