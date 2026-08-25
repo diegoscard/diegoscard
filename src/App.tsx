@@ -98,12 +98,12 @@ export default function App() {
       <main className="relative max-w-lg mx-auto px-6 pt-20 pb-24">
         {/* Profile Header */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="flex flex-col items-center text-center mb-16"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-col items-center text-center mb-12"
         >
-          <div className="relative mb-8">
-            <div className="w-28 h-28 rounded-full bg-gradient-to-tr from-red-600 via-red-500 to-black p-[3px] shadow-2xl shadow-red-600/20">
+          <div className="relative mb-10">
+            <div className="w-28 h-28 rounded-full bg-gradient-to-tr from-red-600 via-red-500 to-black p-[3px] shadow-[0_0_50px_-12px_rgba(220,38,38,0.5)]">
               <div className="w-full h-full rounded-full bg-[#0F0F0F] flex items-center justify-center overflow-hidden border-4 border-[#050505]">
                 <div className="text-3xl font-black text-white italic tracking-tighter">SCARD</div>
               </div>
@@ -116,16 +116,23 @@ export default function App() {
             />
           </div>
           
-          <h1 className="text-4xl font-black tracking-tighter uppercase mb-3 bg-gradient-to-b from-white to-zinc-500 bg-clip-text text-transparent">
-            {INITIAL_PROFILE.name}
-          </h1>
-          <div className="flex items-center gap-2 px-3 py-1 bg-red-600/10 border border-red-500/20 rounded-full mb-4">
+          <div className="relative mb-6 group">
+            <div className="absolute inset-0 bg-white/10 blur-xl opacity-0 group-hover:opacity-100 transition-opacity rounded-full" />
+            <div className="relative bg-gradient-to-b from-white to-zinc-400 bg-clip-text text-transparent">
+              <h1 className="text-4xl font-black tracking-tighter uppercase px-8 py-2">
+                {INITIAL_PROFILE.name}
+              </h1>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 px-4 py-1.5 bg-red-600/10 border border-red-500/20 rounded-full mb-6">
             <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-            <span className="text-[10px] font-black tracking-[0.2em] text-red-500 uppercase">
+            <span className="text-[9px] font-black tracking-[0.2em] text-red-500 uppercase">
               CRIADOR DE CONTEÚDO DIGITAL
             </span>
           </div>
-          <p className="text-zinc-500 text-[11px] font-bold uppercase tracking-widest leading-relaxed max-w-xs">
+
+          <p className="text-zinc-500 text-[11px] font-bold uppercase tracking-[0.15em] leading-relaxed max-w-xs opacity-80">
             {INITIAL_PROFILE.bio}
           </p>
         </motion.div>
