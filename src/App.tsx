@@ -11,6 +11,22 @@ const INITIAL_PROFILE: UserProfile = {
   bio: "Videomaker Mobile & Estrategista Digital +20 anos criando resultados",
   links: [
     {
+      id: "docesfinosabor",
+      title: "DOCES FINO SABOR",
+      url: "https://docesfinosabor.vercel.app/",
+      icon: "Brigadeiro",
+      color: "bg-[#e39c94]",
+      hoverColor: "hover:bg-[#d48c84]",
+    },
+    {
+      id: "iptv",
+      title: "SCARD PLAY IPTV",
+      url: "https://scard-play.vercel.app/",
+      icon: "Tv",
+      color: "bg-red-600",
+      hoverColor: "hover:bg-red-700",
+    },
+    {
       id: "instagram",
       title: "INSTAGRAM",
       url: "https://www.instagram.com/srscard/",
@@ -41,14 +57,6 @@ const INITIAL_PROFILE: UserProfile = {
       icon: "MessageCircle",
       color: "bg-[#25D366]",
       hoverColor: "hover:bg-[#1DA851]",
-    },
-    {
-      id: "iptv",
-      title: "SCARD PLAY IPTV",
-      url: "https://scard-play.vercel.app/",
-      icon: "Tv",
-      color: "bg-red-600",
-      hoverColor: "hover:bg-red-700",
     },
   ],
 };
